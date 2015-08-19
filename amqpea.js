@@ -494,7 +494,7 @@ AMQPConnection.prototype.declareQueue = function(options, callback) {
 };
 
 AMQPConnection.prototype.createQueueConsumerChannel =
-function(queueName, prefetchCount) {
+function(queueName, prefetchCount, openCallback) {
     var handle = this.handle;
     var mutex = asyncMutex();
     var num = ++this.channelNum;
@@ -505,6 +505,9 @@ function(queueName, prefetchCount) {
         });
 
         handle.once(num + ':channel.open-ok', function() {
+            if (openCallback) {
+                openCallback();
+            }
             next();
         });
     });
